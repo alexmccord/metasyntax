@@ -9,7 +9,6 @@ author:             Alexander McCord
 maintainer:         alex@mccord.dev
 category:           Language
 build-type:         Simple
-extra-doc-files:    CHANGELOG.md
 
 tested-with: GHC ==9.4.8
 
