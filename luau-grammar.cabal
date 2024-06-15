@@ -1,16 +1,21 @@
-cabal-version:      3.0
-name:               luau-grammar
-version:            0.1.0.0
--- synopsis:
--- description:
-license:            MIT
-license-file:       LICENSE
-author:             Alexander McCord
-maintainer:         alex@mccord.dev
-category:           Language
-build-type:         Simple
+cabal-version:  3.0
+name:           luau-grammar
+version:        0.1.0.0
+synopsis:       Language specification generation
+description:    Luau-grammar generates a .tmLanguage so that you
+                don't have to write in the wretched and accursed
+                so-called "language" of regular expressions.
+license:        MIT
+license-file:   LICENSE
+author:         Alexander McCord
+maintainer:     alex@mccord.dev
+category:       Language
+build-type:     Simple
+tested-with:    GHC ==9.4.8
 
-tested-with: GHC ==9.4.8
+source-repository head
+    type:     git
+    location: https://github.com/alexmccord/luau-grammar
 
 common warnings
     ghc-options: -Wall
