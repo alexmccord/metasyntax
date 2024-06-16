@@ -23,24 +23,65 @@ anyAlnum = anyAlpha <|> anyDigit
 identifier :: Parser
 identifier = aAndManyB anyAlpha anyAlnum
 
+integer :: Parser
+integer = anyDigit <&> many (anyDigit <|> underscore)
+  where
+    underscore = char '_'
+
 expr :: Parser
-expr = identifier
+expr = identifier <|> integer
 
-parseOk :: Text -> Test
-parseOk t = TestCase $ assert (isLegal expr t)
+parseOk :: Parser -> Text -> Test
+parseOk p t = TestCase $ assert (isLegal p t)
 
-parseFail :: Text -> Test
-parseFail t = TestCase $ assert (not (isLegal expr t))
+parseFail :: Parser -> Text -> Test
+parseFail p t = TestCase $ assert (not (isLegal p t))
 
 identifierTests :: Test
 identifierTests =
   TestLabel "identifiers" $
     test
-      [ TestLabel "should begin with alpha" (parseOk "a"),
-        TestLabel "should have variable length" (parseOk "aaa"),
-        TestLabel "should not be empty" (parseFail ""),
-        TestLabel "should not begin with numbers" (parseFail "1")
+      [ TestLabel "should begin with alpha" (legal "a"),
+        TestLabel "should have variable length" (legal "abc"),
+        TestLabel "should have digits after first alpha" (legal "a1"),
+        TestLabel "should not be empty" (illegal ""),
+        TestLabel "should not begin with digit" (illegal "1")
       ]
+  where
+    legal = parseOk identifier
+    illegal = parseFail identifier
+
+integerTests :: Test
+integerTests =
+  TestLabel "integers" $
+    test
+      [ TestLabel "should begin with digit" (legal "1"),
+        TestLabel "should have variable length" (legal "123"),
+        TestLabel "should have underscores after first digit" (legal "1_2"),
+        TestLabel "should not have alphas after first digit" (illegal "1a"),
+        TestLabel "should not be empty" (illegal ""),
+        TestLabel "should not begin with alpha" (illegal "a")
+      ]
+  where
+    legal = parseOk integer
+    illegal = parseFail integer
+
+exprTests :: Test
+exprTests =
+  TestLabel "exprs" $
+    test
+      [ TestLabel "should parse as identifier" (legal "a"),
+        TestLabel "should parse as integer" (legal "1"),
+        TestLabel "should not parse as anything" (illegal "1 a")
+      ]
+  where
+    legal = parseOk expr
+    illegal = parseFail expr
 
 tests :: Test
-tests = test [identifierTests]
+tests =
+  test
+    [ identifierTests,
+      integerTests,
+      exprTests
+    ]
