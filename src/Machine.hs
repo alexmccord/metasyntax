@@ -2,8 +2,8 @@
 
 module Machine
   ( module Parsec,
-    Reply,
-    runParser,
+    Reply (..),
+    isLegal,
   )
 where
 
@@ -48,21 +48,21 @@ uncons (ParserState t) = case Text.uncons t of
   Just (hd, tl) -> Success (hd, ParserState tl)
   Nothing -> Error
 
-runParser :: Text -> Parser -> Reply ParserState
-runParser s = run (mkState s)
+isLegal :: Parser -> Text -> Bool
+isLegal p t = case runParser p t of
+  Success (ParserState "") -> True
+  Success _ -> error "Reply was successful but ParserState was non-empty"
+  Error -> False
 
-run :: ParserState -> Parser -> Reply ParserState
-run ps@(ParserState "") _ = Success ps
-run ps Ok = runOk (uncons ps)
-run ps (Char c) = runChar (uncons ps) c
-run ps (And a b) = runAnd ps a b
-run ps (Or a b) = runOr ps a b
-run ps (Many a) = runMany ps a
+runParser :: Parser -> Text -> Reply ParserState
+runParser p s = run p (mkState s)
 
-runOk :: Reply (Char, ParserState) -> Reply ParserState
-runOk r = do
-  (_, ps) <- r
-  run ps Ok
+run :: Parser -> ParserState -> Reply ParserState
+run Ok ps = Success ps
+run (Char c) ps = runChar (uncons ps) c
+run (And a b) ps = runAnd a b ps
+run (Or a b) ps = runOr a b ps
+run (Many a) ps = runMany a ps
 
 runChar :: Reply (Char, ParserState) -> Char -> Reply ParserState
 runChar r c = do
@@ -71,15 +71,16 @@ runChar r c = do
     then Success tl
     else Error
 
-runAnd :: ParserState -> Parser -> Parser -> Reply ParserState
-runAnd ps a b = do
-  ps' <- run ps a
-  run ps' b
+runAnd :: Parser -> Parser -> ParserState -> Reply ParserState
+runAnd a b ps = do
+  ps' <- run a ps
+  run b ps'
 
-runOr :: ParserState -> Parser -> Parser -> Reply ParserState
-runOr ps a b = run ps a <|> run ps b
+runOr :: Parser -> Parser -> ParserState -> Reply ParserState
+runOr a b ps = run a ps <|> run b ps
 
-runMany :: ParserState -> Parser -> Reply ParserState
-runMany ps a = do
-  ps' <- run ps a
-  run ps' (Many a)
+runMany :: Parser -> ParserState -> Reply ParserState
+runMany _ ps@(ParserState "") = Success ps
+runMany a ps = do
+  ps' <- run a ps
+  run (Many a) ps'

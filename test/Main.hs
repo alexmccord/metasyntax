@@ -1,4 +1,15 @@
 module Main (main) where
 
-main :: IO ()
-main = putStrLn "Test suite not yet implemented."
+import MachineTest
+import System.Exit (exitFailure, exitSuccess)
+import Test.HUnit
+
+allTests :: Test
+allTests = tests
+
+main :: IO Counts
+main = do
+  c <- runTestTT allTests
+  if errors c == 0 && failures c == 0
+    then exitSuccess
+    else exitFailure
