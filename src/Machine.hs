@@ -65,7 +65,6 @@ run (Char c) ps = runChar (uncons ps) c
 run (And a b) ps = runAnd a b ps
 run (Or a b) ps = runOr a b ps
 run (Many a) ps = runMany a ps
-run (Name _ p) ps = run p ps
 
 runChar :: Reply (Char, ParserState) -> Char -> ParseReply
 runChar r c = do

@@ -12,7 +12,6 @@ data (Show a) => Parser a
   | And (Parser a) (Parser a)
   | Or (Parser a) (Parser a)
   | Many (Parser a)
-  | Name a (Parser a)
 
 instance (Show a) => Show (Parser a) where
   show Ok = "Ok"
@@ -20,7 +19,6 @@ instance (Show a) => Show (Parser a) where
   show (And a b) = "(& " <> show a <> " " <> show b <> ")"
   show (Or a b) = "(| " <> show a <> " " <> show b <> ")"
   show (Many a) = "(" <> show a <> ")*"
-  show (Name n _) = show n
 
 (<|>) :: (Show a) => Parser a -> Parser a -> Parser a
 (<|>) = Or
@@ -42,6 +40,3 @@ many = Many
 
 aAndManyB :: (Show a) => Parser a -> Parser a -> Parser a
 aAndManyB a b = a <&> many b
-
-name :: (Show a) => a -> Parser a -> Parser a
-name = Name

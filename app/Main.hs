@@ -21,10 +21,10 @@ anyAlnum :: MyParser
 anyAlnum = anyAlpha <|> anyDigit
 
 identifier :: MyParser
-identifier = Parsec.name "identifier" $ aAndManyB anyAlpha anyAlnum
+identifier = aAndManyB anyAlpha anyAlnum
 
 integer :: MyParser
-integer = Parsec.name "integer" $ aAndManyB anyDigit (anyDigit <|> underscore)
+integer = aAndManyB anyDigit (anyDigit <|> underscore)
   where
     underscore = char '_'
 
