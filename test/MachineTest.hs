@@ -7,34 +7,34 @@ import Machine
 import Parsec
 import Test.HUnit
 
-anyAlpha :: Parser
+anyAlpha :: Parser ()
 anyAlpha = underscore <|> lowercase <|> uppercase
   where
     underscore = char '_'
     lowercase = anyChar ['a' .. 'z']
     uppercase = anyChar ['A' .. 'Z']
 
-anyDigit :: Parser
+anyDigit :: Parser ()
 anyDigit = anyChar ['0' .. '9']
 
-anyAlnum :: Parser
+anyAlnum :: Parser ()
 anyAlnum = anyAlpha <|> anyDigit
 
-identifier :: Parser
+identifier :: Parser ()
 identifier = aAndManyB anyAlpha anyAlnum
 
-integer :: Parser
+integer :: Parser ()
 integer = anyDigit <&> many (anyDigit <|> underscore)
   where
     underscore = char '_'
 
-expr :: Parser
+expr :: Parser ()
 expr = identifier <|> integer
 
-parseOk :: Parser -> Text -> Test
+parseOk :: Parser () -> Text -> Test
 parseOk p t = TestCase $ assert (isLegal p t)
 
-parseFail :: Parser -> Text -> Test
+parseFail :: Parser () -> Text -> Test
 parseFail p t = TestCase $ assert (not (isLegal p t))
 
 identifierTests :: Test

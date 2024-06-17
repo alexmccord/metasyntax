@@ -50,21 +50,22 @@ uncons (ParserState t) = case Text.uncons t of
   Just (hd, tl) -> Success (hd, ParserState tl)
   Nothing -> Error
 
-isLegal :: Parser -> Text -> Bool
+isLegal :: (Show a) => Parser a -> Text -> Bool
 isLegal p t = case runParser p t of
   Success (ParserState "") -> True
   Success _ -> error "Reply was successful but ParserState was non-empty"
   Error -> False
 
-runParser :: Parser -> Text -> ParseReply
+runParser :: (Show a) => Parser a -> Text -> ParseReply
 runParser p s = run p (mkState s)
 
-run :: Parser -> ParserState -> ParseReply
+run :: (Show a) => Parser a -> ParserState -> ParseReply
 run Ok ps = Success ps
 run (Char c) ps = runChar (uncons ps) c
 run (And a b) ps = runAnd a b ps
 run (Or a b) ps = runOr a b ps
 run (Many a) ps = runMany a ps
+run (Name _ p) ps = run p ps
 
 runChar :: Reply (Char, ParserState) -> Char -> ParseReply
 runChar r c = do
@@ -73,15 +74,15 @@ runChar r c = do
     then Success tl
     else Error
 
-runAnd :: Parser -> Parser -> ParserState -> ParseReply
+runAnd :: (Show a) => Parser a -> Parser a -> ParserState -> ParseReply
 runAnd a b ps = do
   ps' <- run a ps
   run b ps'
 
-runOr :: Parser -> Parser -> ParserState -> ParseReply
+runOr :: (Show a) => Parser a -> Parser a -> ParserState -> ParseReply
 runOr a b ps = run a ps <|> run b ps
 
-runMany :: Parser -> ParserState -> ParseReply
+runMany :: (Show a) => Parser a -> ParserState -> ParseReply
 runMany _ ps@(ParserState "") = Success ps
 runMany a ps = do
   ps' <- run a ps

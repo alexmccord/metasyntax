@@ -19,30 +19,42 @@ infixr 3 <&>
 -- We'll want to come up with a DSL to generate the state machine graph.
 -- Then we can go ahead and walk that graph.
 
-data Parser
+data (Show a) => Parser a
   = Ok
   | Char Char
-  | And Parser Parser
-  | Or Parser Parser
-  | Many Parser
+  | And (Parser a) (Parser a)
+  | Or (Parser a) (Parser a)
+  | Many (Parser a)
+  | Name a (Parser a)
 
-(<|>) :: Parser -> Parser -> Parser
+instance (Show a) => Show (Parser a) where
+  show Ok = "Ok"
+  show (Char c) = "(Char " <> show c <> ")"
+  show (And a b) = "(& " <> show a <> " " <> show b <> ")"
+  show (Or a b) = "(| " <> show a <> " " <> show b <> ")"
+  show (Many a) = "(" <> show a <> ")*"
+  show (Name n _) = show n
+
+(<|>) :: (Show a) => Parser a -> Parser a -> Parser a
 (<|>) = Or
 
-(<&>) :: Parser -> Parser -> Parser
+(<&>) :: (Show a) => Parser a -> Parser a -> Parser a
 (<&>) = And
 
-char :: Char -> Parser
+char :: (Show a) => Char -> Parser a
 char = Char
 
-anyChar :: [Char] -> Parser
+anyChar :: (Show a) => [Char] -> Parser a
 anyChar cs = foldl1 (<|>) (fmap char cs)
 
-optional :: Parser -> Parser
+optional :: (Show a) => Parser a -> Parser a
 optional a = a <|> Ok
 
-many :: Parser -> Parser
+many :: (Show a) => Parser a -> Parser a
 many = Many
 
-aAndManyB :: Parser -> Parser -> Parser
+aAndManyB :: (Show a) => Parser a -> Parser a -> Parser a
 aAndManyB a b = a <&> many b
+
+name :: (Show a) => a -> Parser a -> Parser a
+name = Name
