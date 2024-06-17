@@ -34,6 +34,7 @@ instance Monad Reply where
 
 instance Alternative Reply where
   empty = Error
+
   Success a <|> _ = Success a
   Error <|> r = r
 
