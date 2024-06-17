@@ -1,8 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 module Machine
-  ( module Parsec,
-    Reply (..),
+  ( Reply (..),
     isLegal,
   )
 where
