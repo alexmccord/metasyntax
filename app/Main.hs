@@ -1,5 +1,8 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 module Main where
 
+import Language
 import Parsec
 
 type MyParser = Parser String
@@ -18,15 +21,19 @@ anyAlnum :: MyParser
 anyAlnum = anyAlpha <|> anyDigit
 
 identifier :: MyParser
-identifier = name "identifier" $ aAndManyB anyAlpha anyAlnum
+identifier = Parsec.name "identifier" $ aAndManyB anyAlpha anyAlnum
 
 integer :: MyParser
-integer = name "integer" $ anyDigit <&> many (anyDigit <|> underscore)
+integer = Parsec.name "integer" $ aAndManyB anyDigit (anyDigit <|> underscore)
   where
     underscore = char '_'
 
 expr :: MyParser
 expr = identifier <|> integer
 
+myLang :: TmLanguage
+myLang = makeTmLanguage "Lang" "source.lang" "lang" $ do
+  return ()
+
 main :: IO ()
-main = print expr
+main = print myLang
