@@ -2,7 +2,9 @@
 
 module Main where
 
+import Data.Text.IO as Text
 import Language
+import Oniguruma
 import Parsec
 
 type MyParser = Parser String
@@ -36,4 +38,4 @@ myLang = makeTmLanguage "Lang" "source.lang" "lang" $ do
   return ()
 
 main :: IO ()
-main = print myLang
+main = Text.putStrLn $ Oniguruma.toRegex expr
