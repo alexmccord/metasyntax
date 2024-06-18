@@ -1,8 +1,8 @@
 cabal-version:  3.0
-name:           luau-grammar
+name:           metasyntax
 version:        0.1.0.0
 synopsis:       Language specification generation
-description:    Luau-grammar generates a .tmLanguage so that you
+description:    metasyntax generates a .tmLanguage so that you
                 don't have to write in the wretched and accursed
                 so-called "language" of regular expressions.
 license:        MIT
@@ -15,7 +15,7 @@ tested-with:    GHC ==9.4.8
 
 source-repository head
     type:     git
-    location: https://github.com/alexmccord/luau-grammar
+    location: https://github.com/alexmccord/metasyntax
 
 common warnings
     ghc-options: -Wall
@@ -35,7 +35,7 @@ library
         text >=2.0 && <=2.1.1,
         containers,
 
-executable luau-grammar
+executable metasyntax
     import:           warnings
     hs-source-dirs:   app
     main-is:          Main.hs
@@ -43,9 +43,9 @@ executable luau-grammar
     build-depends:
         base ^>=4.17.0.0,
         text >=2.0 && <=2.1.1,
-        luau-grammar,
+        metasyntax,
 
-test-suite luau-grammar-test
+test-suite metasyntax-test
     import:           warnings
     other-modules:
         MachineTest
@@ -57,4 +57,4 @@ test-suite luau-grammar-test
         base ^>=4.17.0.0,
         text >=2.0 && <=2.1.1,
         HUnit,
-        luau-grammar,
+        metasyntax,
