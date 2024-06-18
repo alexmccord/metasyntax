@@ -6,7 +6,7 @@ infixr 2 <|>
 
 infixr 3 <&>
 
-data (Show a) => Parser a
+data Parser a
   = Ok
   | Char Char
   | And (Parser a) (Parser a)
@@ -20,23 +20,23 @@ instance (Show a) => Show (Parser a) where
   show (Or a b) = "(| " <> show a <> " " <> show b <> ")"
   show (Many a) = "(" <> show a <> ")*"
 
-(<|>) :: (Show a) => Parser a -> Parser a -> Parser a
+(<|>) :: Parser a -> Parser a -> Parser a
 (<|>) = Or
 
-(<&>) :: (Show a) => Parser a -> Parser a -> Parser a
+(<&>) :: Parser a -> Parser a -> Parser a
 (<&>) = And
 
-char :: (Show a) => Char -> Parser a
+char :: Char -> Parser a
 char = Char
 
-anyChar :: (Show a) => [Char] -> Parser a
+anyChar :: [Char] -> Parser a
 anyChar cs = foldl1 (<|>) (fmap char cs)
 
-optional :: (Show a) => Parser a -> Parser a
+optional :: Parser a -> Parser a
 optional a = a <|> Ok
 
-many :: (Show a) => Parser a -> Parser a
+many :: Parser a -> Parser a
 many = Many
 
-aAndManyB :: (Show a) => Parser a -> Parser a -> Parser a
+aAndManyB :: Parser a -> Parser a -> Parser a
 aAndManyB a b = a <&> many b
