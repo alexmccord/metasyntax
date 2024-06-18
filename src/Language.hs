@@ -40,7 +40,7 @@ addFileType :: Text -> TmLanguageState
 addFileType ext = modify $ \lang ->
   lang {fileTypes = ext : fileTypes lang}
 
--- addPattern :: (Show a) => Parser a -> TmLanguageState
+-- addPattern :: Parser a -> TmLanguageState
 -- addPattern a = modify $ \lang ->
 --   lang {patterns = toPattern a : patterns lang}
 

@@ -70,5 +70,5 @@ renderOptional (Repeat a) = "(?:" <> renderRepeat a <> ")"
 renderOptional (Except _) = render emptyToken
 renderOptional (Optional a) = renderOptional a
 
-toRegex :: (Show a) => Parser a -> Text
+toRegex :: Parser a -> Text
 toRegex = render . toOnigurumaIR
