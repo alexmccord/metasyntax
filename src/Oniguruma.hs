@@ -38,10 +38,9 @@ render (Optional a) = renderOptional a
 
 renderClass :: Set Char -> Text -> Text -> Text
 renderClass = renderClassList . Set.toList
-
-renderClassList :: [Char] -> Text -> Text -> Text
-renderClassList [c] _ _ = Text.singleton c
-renderClassList s l r = l <> Text.pack s <> r
+  where
+    renderClassList [c] _ _ = Text.singleton c
+    renderClassList s l r = l <> Text.pack s <> r
 
 renderJuxta :: OnigurumaIR -> OnigurumaIR -> Text
 renderJuxta a b = render a <> render b
