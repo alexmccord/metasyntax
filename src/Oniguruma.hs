@@ -20,6 +20,16 @@ data OnigurumaIR
 emptyToken :: OnigurumaIR
 emptyToken = Token Text.empty
 
+-- Don't forget about Chomsky's hierarchy!
+-- Parsers are cyclic, but regular expressions cannot have cyclic rules.
+--
+-- As such, we'll need to detect the point where we're about to cycle.
+-- When we do that, we'll need to come up with a name for the cycle so that
+-- we can add it to the vector of patterns, plus a mapping from the name to the rule.
+--
+--   num = 0 | succ num
+--
+-- This is a valid context-free language, but not a valid regular expression.
 toOnigurumaIR :: Parser a -> OnigurumaIR
 toOnigurumaIR Ok = emptyToken
 toOnigurumaIR (Char c) = Token (Text.singleton c)
