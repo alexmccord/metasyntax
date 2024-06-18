@@ -1,7 +1,5 @@
 module Parsec where
 
-import Prelude
-
 infixr 2 <|>
 
 infixr 3 <&>
@@ -31,6 +29,9 @@ char = Char
 
 anyChar :: [Char] -> Parser a
 anyChar cs = foldl1 (<|>) (fmap char cs)
+
+string :: String -> Parser a
+string s = foldl1 (<&>) (fmap char s)
 
 optional :: Parser a -> Parser a
 optional a = a <|> Ok

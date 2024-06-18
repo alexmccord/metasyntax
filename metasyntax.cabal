@@ -49,6 +49,7 @@ test-suite metasyntax-test
     import:           warnings
     other-modules:
         MachineTest
+        OnigurumaTest
     type:             exitcode-stdio-1.0
     hs-source-dirs:   test
     main-is:          Main.hs

@@ -46,6 +46,8 @@ renderJuxta :: OnigurumaIR -> OnigurumaIR -> Text
 renderJuxta a b = render a <> render b
 
 renderAlter :: OnigurumaIR -> OnigurumaIR -> Text
+renderAlter a (Token "") = renderOptional a
+renderAlter (Token "") b = renderOptional b
 renderAlter a b = "(" <> render a <> "|" <> render b <> ")"
 
 renderRepeat :: OnigurumaIR -> Text
